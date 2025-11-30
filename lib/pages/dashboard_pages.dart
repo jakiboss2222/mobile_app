@@ -251,39 +251,49 @@ class _DashboardPagesState extends State<DashboardPages> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 25),
+                          const SizedBox(height: 18),
                           GridView.count(
                             crossAxisCount: 3,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20,
-                            childAspectRatio: 0.88,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 1.3,
                             children: menuItems.map((item) {
                               return GestureDetector(
                                 onTap: () => _onMenuTap(item["label"]),
                                 child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: 72,
-                                      height: 72,
+                                      width: 50,
+                                      height: 50,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(
                                           color: Colors.black87,
-                                          width: 2,
+                                          width: 1.5,
                                         ),
                                       ),
                                       child: Icon(
                                         item["icon"],
-                                        size: 34,
+                                        size: 24,
                                         color: Colors.black87,
                                       ),
                                     ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      item["label"],
-                                      style: const TextStyle(fontSize: 13),
+                                    const SizedBox(height: 4),
+                                    Flexible(
+                                      child: Text(
+                                        item["label"],
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
                                     ),
                                   ],
                                 ),
