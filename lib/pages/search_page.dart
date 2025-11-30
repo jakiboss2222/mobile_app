@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'input_krs_page.dart';
 import 'matakuliah_page.dart';
 import 'profile_pages.dart';
+import 'ipk_kumulatif_page.dart';
+import 'jadwal_pages.dart';
+import 'kehadiran_pages.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -30,8 +33,25 @@ class _SearchPageState extends State<SearchPage> {
       "page": const ProfilePages(),
       "icon": Icons.person,
     },
-  ];
+  
+  {
+      "title": "Indeks Prestasi Kumulatif",
+      "page": const IpkKumulatifPage(),
+      "icon": Icons.bookmark,
+    },
+     {
+      "title": "Jadwal Kuliah",
+      "page": const JadwalPages(),
+      "icon": Icons.book,
+    },
+    {
+      "title": "Kehadiran Kuliah",
+      "page": const KehadiranPages(),
+      "icon": Icons.check_circle,
+    },
 
+
+  ];
   List<Map<String, dynamic>> filtered = [];
 
   @override
@@ -53,14 +73,25 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pencarian Menu"),
-        backgroundColor: const Color.fromARGB(255, 75, 101, 128),
+        backgroundColor: const Color(0xFF1C2A4D),
+        title: const Text(
+          "Pencarian Menu",
+          style: TextStyle(
+            color: Colors.white,        // Judul jadi putih
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,          // Icon back juga putih
+        ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            //pencarian
+            // Input pencarian
             TextField(
               controller: searchC,
               onChanged: searchMenu,
@@ -75,7 +106,7 @@ class _SearchPageState extends State<SearchPage> {
 
             const SizedBox(height: 20),
 
-            // Hasil pencarian
+            // Hasil Pencarian
             Expanded(
               child: filtered.isEmpty
                   ? const Center(
@@ -91,7 +122,7 @@ class _SearchPageState extends State<SearchPage> {
                           child: ListTile(
                             leading: Icon(
                               item["icon"],
-                              color: const Color.fromARGB(255, 75, 101, 128),
+                              color: const Color(0xFF1C2A4D),
                               size: 28,
                             ),
                             title: Text(

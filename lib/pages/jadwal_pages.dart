@@ -11,9 +11,16 @@ class _JadwalPagesState extends State<JadwalPages> {
   TextEditingController searchController = TextEditingController();
 
   final List<Map<String, dynamic>> jadwal = [
-    {"kode": "#144", "nama": "Kewarganegaraan"},
-    {"kode": "#75", "nama": "Pancasila"},
-    {"kode": "#100", "nama": "Etika Profesi Dan Bimbingan Karir"},
+    {"kode": "#001", "nama": "Algoritma dan Pemrograman", "jam": "08:00 - 09:40"},
+    {"kode": "#002", "nama": "Struktur Data", "jam": "10:00 - 11:40"},
+    {"kode": "#003", "nama": "Basis Data", "jam": "09:00 - 10:40"},
+    {"kode": "#004", "nama": "Jaringan Komputer", "jam": "13:00 - 14:40"},
+    {"kode": "#005", "nama": "Analisis Sistem", "jam": "08:00 - 09:40"},
+    {"kode": "#006", "nama": "Perancangan Sistem Produksi", "jam": "09:00 - 10:40"},
+    {"kode": "#007", "nama": "Akuntansi Dasar", "jam": "13:00 - 14:40"},
+    {"kode": "#008", "nama": "Pengantar Manajemen", "jam": "15:00 - 16:40"},
+    {"kode": "#009", "nama": "Pengantar Hukum Indonesia", "jam": "08:00 - 09:40"},
+    {"kode": "#010", "nama": "Pengantar Agribisnis", "jam": "10:00 - 11:40"},
   ];
 
   List<Map<String, dynamic>> filteredJadwal = [];
@@ -21,7 +28,7 @@ class _JadwalPagesState extends State<JadwalPages> {
   @override
   void initState() {
     super.initState();
-    filteredJadwal = jadwal; 
+    filteredJadwal = jadwal;
   }
 
   void filterSearch(String query) {
@@ -40,21 +47,19 @@ class _JadwalPagesState extends State<JadwalPages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff1e3557),
+      backgroundColor: const Color.fromARGB(255, 101, 114, 114),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Tombol Back
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
               ),
               const SizedBox(height: 10),
 
-              // Title
               const Center(
                 child: Text(
                   "JADWAL KULIAH",
@@ -88,30 +93,6 @@ class _JadwalPagesState extends State<JadwalPages> {
                         ),
                       ),
                     )
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color(0xff284169),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.calendar_month, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text(
-                      "Senin, 13 Oktober 2025",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -159,13 +140,30 @@ class _JadwalPagesState extends State<JadwalPages> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(
-                                        filteredJadwal[index]["nama"],
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                        ),
-                                      ),
+
+                                      // ⬇ NAMA + JAM DALAM 1 BARIS
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              filteredJadwal[index]["nama"],
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          Text(
+                                            filteredJadwal[index]["jam"],
+                                            style: TextStyle(
+                                              color: Colors.white.withOpacity(0.8),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
                                 )

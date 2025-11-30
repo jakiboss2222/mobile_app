@@ -64,7 +64,7 @@ class _KehadiranPagesState extends State<KehadiranPages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff1e3557),
+      backgroundColor: const Color.fromARGB(255, 101, 114, 114),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

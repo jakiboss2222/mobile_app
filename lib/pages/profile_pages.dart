@@ -191,7 +191,7 @@ class _ProfilePagesState extends State<ProfilePages> {
     final fotoUrl = user?["foto"];
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 75, 101, 128),
+      backgroundColor:const Color(0xFF1C2A4D),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -252,7 +252,7 @@ class _ProfilePagesState extends State<ProfilePages> {
                                 child: Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: const BoxDecoration(
-                                    color: const Color.fromARGB(255, 75, 101, 128),
+                                    color: const Color(0xFF1C2A4D),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(Icons.camera_alt,
@@ -297,7 +297,7 @@ class _ProfilePagesState extends State<ProfilePages> {
                             label: Text(
                                 isLoading ? "Menyimpan..." : "Simpan Perubahan"),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(255, 75, 101, 128),
+                              backgroundColor: const Color(0xFF1C2A4D),
                               foregroundColor: Colors.white,
                               minimumSize: const Size.fromHeight(50),
                               shape: RoundedRectangleBorder(

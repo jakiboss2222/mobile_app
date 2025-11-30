@@ -10,7 +10,8 @@ import './matakuliah_page.dart';
 import './profile_pages.dart';
 import './input_krs_page.dart';
 import './jadwal_pages.dart';
-import './kehadiran_pages.dart';   // <-- SUDAH BENAR
+import './kehadiran_pages.dart';
+import './ipk_kumulatif_page.dart'; // Impor IpkKumulatifPage
 
 class DashboardPages extends StatefulWidget {
   const DashboardPages({super.key});
@@ -104,6 +105,13 @@ class _DashboardPagesState extends State<DashboardPages> {
         );
         break;
 
+      case "Nilai": // Navigasi ke halaman IPK
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const IpkKumulatifPage()), // Menggunakan 'const'
+        );
+        break;
+
       case "KRS":
         Navigator.push(
           context,
@@ -186,7 +194,7 @@ class _DashboardPagesState extends State<DashboardPages> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 22, vertical: 12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF4B6580),
+                              color:const Color(0xFF1C2A4D),
                               borderRadius: BorderRadius.circular(40),
                               boxShadow: [
                                 BoxShadow(
@@ -297,7 +305,7 @@ class _DashboardPagesState extends State<DashboardPages> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: const Color.fromARGB(255, 75, 101, 128),
+                          color: const Color(0xFF1C2A4D),
                         ),
                       ),
                     ),
@@ -323,7 +331,7 @@ class _DashboardPagesState extends State<DashboardPages> {
                               child: ListTile(
                                 leading: const Icon(
                                   Icons.article_outlined,
-                                  color: Color.fromARGB(255, 75, 101, 128),
+                                  color: const Color(0xFF1C2A4D),
                                 ),
                                 title: Text(
                                   berita["judul"] ?? "-",

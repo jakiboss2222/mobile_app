@@ -17,7 +17,7 @@ class _BottomNavState extends State<BottomNav> {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      backgroundColor: const Color.fromARGB(255, 75, 101, 128),
+      backgroundColor: const Color(0xFF1C2A4D),
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.blue.shade100,
       selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),

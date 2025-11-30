@@ -29,8 +29,18 @@ dependencies:
   # IMAGE PICKER
   image_picker: ^1.0.7
 
+  # CAMERA
+  camera: ^0.10.5+5
+
   # LAUNCH URL / OPEN FILE / OPEN BROWSER
   url_launcher: ^6.3.1
+
+  # GPS LOCATION
+  geolocator: ^11.0.0
+
+  # MAP (OPENSTREETMAP - NO API KEY)
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
 
 dev_dependencies:
   flutter_test:
@@ -43,9 +53,3 @@ flutter:
 
   assets:
     - assets/images/
-
-  # Jika suatu saat ingin pakai font custom:
-  # fonts:
-  #   - family: MyFont
-  #     fonts:
-  #       - asset: assets/fonts/MyFont-Regular.ttf
