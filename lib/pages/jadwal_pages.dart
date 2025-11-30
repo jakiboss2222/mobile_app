@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../api/api_service.dart';
 
 class JadwalPages extends StatefulWidget {
   const JadwalPages({super.key});
@@ -10,33 +13,62 @@ class JadwalPages extends StatefulWidget {
 class _JadwalPagesState extends State<JadwalPages> {
   TextEditingController searchController = TextEditingController();
 
-  final List<Map<String, dynamic>> jadwal = [
-    {"kode": "#001", "nama": "Algoritma dan Pemrograman", "jam": "08:00 - 09:40"},
-    {"kode": "#002", "nama": "Struktur Data", "jam": "10:00 - 11:40"},
-    {"kode": "#003", "nama": "Basis Data", "jam": "09:00 - 10:40"},
-    {"kode": "#004", "nama": "Jaringan Komputer", "jam": "13:00 - 14:40"},
-    {"kode": "#005", "nama": "Analisis Sistem", "jam": "08:00 - 09:40"},
-    {"kode": "#006", "nama": "Perancangan Sistem Produksi", "jam": "09:00 - 10:40"},
-    {"kode": "#007", "nama": "Akuntansi Dasar", "jam": "13:00 - 14:40"},
-    {"kode": "#008", "nama": "Pengantar Manajemen", "jam": "15:00 - 16:40"},
-    {"kode": "#009", "nama": "Pengantar Hukum Indonesia", "jam": "08:00 - 09:40"},
-    {"kode": "#010", "nama": "Pengantar Agribisnis", "jam": "10:00 - 11:40"},
-  ];
-
+  List<Map<String, dynamic>> jadwal = [];
   List<Map<String, dynamic>> filteredJadwal = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    filteredJadwal = jadwal;
+    _loadJadwal();
+  }
+
+  // Load jadwal from API
+  Future<void> _loadJadwal() async {
+    setState(() => isLoading = true);
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      Dio dio = Dio();
+      dio.options.headers['Authorization'] = 'Bearer $token';
+
+      final response = await dio.get("${ApiService.baseUrl}jadwal/daftar-jadwal");
+      
+      if (response.data != null && response.data['jadwals'] != null) {
+        List<dynamic> data = response.data['jadwals'];
+        
+        setState(() {
+          jadwal = data.map((item) => item as Map<String, dynamic>).toList();
+          filteredJadwal = jadwal;
+          isLoading = false;
+        });
+      } else {
+        setState(() => isLoading = false);
+      }
+    } catch (e) {
+      debugPrint("Error loading jadwal: $e");
+      setState(() => isLoading = false);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Gagal memuat jadwal"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void filterSearch(String query) {
     final hasil = jadwal.where((item) {
-      final nama = item["nama"].toString().toLowerCase();
+      final nama = item["nama_matakuliah"].toString().toLowerCase();
       final kode = item["kode"].toString().toLowerCase();
+      final dosen = item["dosen"].toString().toLowerCase();
       final input = query.toLowerCase();
-      return nama.contains(input) || kode.contains(input);
+      return nama.contains(input) || kode.contains(input) || dosen.contains(input);
     }).toList();
 
     setState(() {
@@ -88,7 +120,7 @@ class _JadwalPagesState extends State<JadwalPages> {
                         controller: searchController,
                         onChanged: filterSearch,
                         decoration: const InputDecoration(
-                          hintText: "Cari Kode / Mata Kuliah",
+                          hintText: "Cari Kode / Mata Kuliah / Dosen",
                           border: InputBorder.none,
                         ),
                       ),
@@ -99,79 +131,153 @@ class _JadwalPagesState extends State<JadwalPages> {
 
               const SizedBox(height: 25),
 
+              // Loading or List
               Expanded(
-                child: filteredJadwal.isEmpty
+                child: isLoading
                     ? const Center(
-                        child: Text(
-                          "Tidak ada hasil",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
                         ),
                       )
-                    : ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: filteredJadwal.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                            decoration: BoxDecoration(
-                              color: const Color(0xff284169),
-                              borderRadius: BorderRadius.circular(25),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.25),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 4),
-                                )
-                              ],
+                    : filteredJadwal.isEmpty
+                        ? const Center(
+                            child: Text(
+                              "Tidak ada jadwal",
+                              style: TextStyle(color: Colors.white, fontSize: 16),
                             ),
-                            child: Row(
-                              children: [
-                                const Text("📌", style: TextStyle(fontSize: 22)),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        filteredJadwal[index]["kode"],
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                          )
+                        : ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount: filteredJadwal.length,
+                            itemBuilder: (context, index) {
+                              final item = filteredJadwal[index];
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff284169),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.25),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 4),
+                                    )
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Kode & SKS
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          item["kode"] ?? "-",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                          ),
                                         ),
-                                      ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, 
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.2),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            "${item["jumlah_sks"]} SKS",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
 
-                                      // ⬇ NAMA + JAM DALAM 1 BARIS
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              filteredJadwal[index]["nama"],
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          Text(
-                                            filteredJadwal[index]["jam"],
+                                    // Nama Matkul
+                                    Text(
+                                      item["nama_matakuliah"] ?? "-",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+
+                                    // Dosen
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.person_outline,
+                                          color: Colors.white70,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Text(
+                                            item["dosen"] ?? "-",
                                             style: TextStyle(
-                                              color: Colors.white.withOpacity(0.8),
-                                              fontSize: 14,
+                                              color: Colors.white.withOpacity(0.9),
+                                              fontSize: 13,
                                             ),
                                           ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 6),
+
+                                    // Hari & Jam
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.calendar_today_outlined,
+                                          color: Colors.white70,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          "${item["nama_hari"]} | ${item["jam_mulai"]} - ${item["jam_selesai"]}",
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.9),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 6),
+
+                                    // Ruangan
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.meeting_room_outlined,
+                                          color: Colors.white70,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          item["nama_ruang"] ?? "-",
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.9),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
               ),
             ],
           ),
