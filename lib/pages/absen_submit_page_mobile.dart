@@ -71,6 +71,19 @@ class _AbsenSubmitPageState extends State<AbsenSubmitPage> {
     }
   }
 
+  Future<void> _switchCamera() async {
+    try {
+      setState(() => isCameraReady = false);
+      await cam.switchCamera();
+      setState(() => isCameraReady = true);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal mengganti kamera: $e")),
+      );
+      setState(() => isCameraReady = true);
+    }
+  }
+
   Future<void> _checkAndRequestLocation() async {
     setState(() {
       isLoadingLocation = true;
@@ -454,16 +467,43 @@ class _AbsenSubmitPageState extends State<AbsenSubmitPage> {
 
                   // Mobile Camera Preview
                   if (isCameraReady && cam.controller != null)
-                    Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: CameraPreview(cam.controller!),
-                      ),
+                    Stack(
+                      children: [
+                        Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: CameraPreview(cam.controller!),
+                          ),
+                        ),
+                        
+                        // Switch Camera Button (only show if device has multiple cameras)
+                        if (cam.hasMultipleCameras)
+                          Positioned(
+                            top: 10,
+                            right: 10,
+                            child: Material(
+                              color: Colors.black.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(30),
+                              child: InkWell(
+                                onTap: _switchCamera,
+                                borderRadius: BorderRadius.circular(30),
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: const Icon(
+                                    Icons.flip_camera_ios,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     )
                   else
                     Container(
